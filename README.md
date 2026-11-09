@@ -1,12 +1,10 @@
-# StayLink (working title)
+# StayEase
 
 A property booking platform for Kenya where property managers list apartments and rooms, and customers search, view and book them online.
 
-Built as a three-week group project for the CCI program (SDF-FTH18).
-
 ## The Idea
 
-Small property owners (for example, *Agunda Apartments Naivasha*) have no easy way to get bookings online. StayLink lets them register, list rooms with photos and prices, and manage bookings, while customers browse every property in one place and book by date.
+Small property owners (for example, *Agunda Apartments Naivasha*) have no easy way to get bookings online. StayEase lets them register, list rooms with photos and prices, and manage bookings, while customers browse every property in one place and book by date.
 
 ## User Roles
 
