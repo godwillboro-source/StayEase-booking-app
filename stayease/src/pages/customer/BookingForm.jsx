@@ -33,3 +33,15 @@ function BookingFormPage() {
       ),
     [properties, propertyId],
   );
+
+  useEffect(() => {
+    if (!property) return;
+    const requestedRoomId = searchParams.get("roomId");
+    if (!requestedRoomId) return;
+    const room = property.rooms?.find(
+      (item) => String(item.id) === requestedRoomId && item.available,
+    );
+    setSelectedRoom(room || null);
+  }, [property, searchParams]);
+
+}
