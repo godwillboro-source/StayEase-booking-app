@@ -20,3 +20,7 @@ function BookingFormPage() {
     getRoomAvailability,
     createBooking,
   } = useBookings();
+
+ const [selectedRoom, setSelectedRoom] = useState(null);
+ const [submitting, setSubmitting] = useState(false);
+ const [pageError, setPageError] = useState("");
