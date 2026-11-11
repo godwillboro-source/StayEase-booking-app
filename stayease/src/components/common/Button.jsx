@@ -1,43 +1,9 @@
-import React from "react";
-
-function Button({
-  children,
-  type = "button",
-  variant = "primary",
-  size = "medium",
-  disabled = false,
-  loading = false,
-  onClick,
-  className = "",
-  fullWidth = false
-}) {
-  const buttonClasses = [
-    "btn",
-    `btn-${variant}`,
-    `btn-${size}`,
-    fullWidth ? "btn-full" : "",
-    className
-  ]
-    .filter(Boolean)
-    .join(" ");
-
+const Button = ({ children, onClick, type = "button", className = "", variant = "primary", ...props }) => {
   return (
-    <button
-      type={type}
-      className={buttonClasses}
-      disabled={disabled || loading}
-      onClick={onClick}
-    >
-      {loading ? (
-        <>
-          <span className="button-spinner" />
-          <span>Processing...</span>
-        </>
-      ) : (
-        children
-      )}
+    <button type={type} onClick={onClick} className={`btn btn-${variant} ${className}`} {...props}>
+      {children}
     </button>
   );
-}
+};
 
 export default Button;
