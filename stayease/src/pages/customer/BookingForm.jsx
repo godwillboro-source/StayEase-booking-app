@@ -138,8 +138,76 @@ function BookingFormPage() {
       </main>
     );
   }
-  
+
   const availableRooms = property.rooms?.filter((room) => room.available) || [];
+  if (availableRooms.length === 0) {
+    return (
+      <main className="customer-page">
+        <h2>No rooms available</h2>
+        <p>This property currently has no available rooms.</p>
+        <button onClick={() => navigate(`/properties/${property.id}`)}>
+          Back to property
+        </button>
+      </main>
+    );
+  }
 
+  return (
+    <main className="customer-page booking-page">
+      <div className="customer-page-header">
+        <button
+          type="button"
+          onClick={() => navigate(`/properties/${property.id}`)}
+          className="btn btn-secondary"
+        >
+          Back to property
+        </button>
 
+        <h1>Book your stay</h1>
+        <p>{property.name}</p>
+        <p>{property.location}</p>
+      </div>
+      {pageError && <div className="error-message">{pageError}</div>}
+
+      <div className="booking-page-content">
+        <section className="booking-form-section">
+          <BookingFormComponent
+            property={property}
+            selectedRoom={selectedRoom}
+            onRoomChange={setSelectedRoom}
+            onSubmit={handleBookingSubmit}
+            loading={submitting}
+          />
+        </section>
+
+        <aside className="booking-property-summary">
+          <h3>Property information</h3>
+
+          <img
+            src={property.image || "/images/default-property.jpg"}
+            alt={property.name}
+            className="booking-property-image"
+          />
+
+          <h3>{property.name}</h3>
+          <p>{property.location}</p>
+
+          {selectedRoom && (
+            <div className="selected-room-summary">
+              <p>Selected room: {selectedRoom.name}</p>
+              <p>
+                Price per night: {formatCurrency(selectedRoom.pricePerNight)}
+              </p>
+              <p>Maximum guests: {selectedRoom.capacity}</p>
+            </div>
+          )}
+
+          <p className="booking-form-note">
+            Your booking request will be sent to the property manager. No
+            payment is collected in this demonstration.
+          </p>
+        </aside>
+      </div>
+    </main>
+  );
 }
