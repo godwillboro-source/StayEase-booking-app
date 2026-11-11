@@ -127,4 +127,19 @@ function BookingFormPage() {
     return <p className="error-message">{error}</p>;
   }
 
+  if (!property) {
+    return (
+      <main className="customer-page">
+        <h2>Property unavailable</h2>
+        <p>This property does not exist or has not been approved.</p>
+        <button onClick={() => navigate("/properties")}>
+          Browse properties
+        </button>
+      </main>
+    );
+  }
+  
+  const availableRooms = property.rooms?.filter((room) => room.available) || [];
+
+
 }
