@@ -4,3 +4,19 @@ import { useAuth } from "../../context/AuthContext";
 import { useBookings } from "../../context/BookingContext";
 import BookingFormComponent from "../../components/booking/BookingForm";
 import { formatCurrency } from "../../utils/formatCurrency";
+
+function BookingFormPage() {
+  const { propertyId } = useParams();
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+
+  const { currentUser } = useAuth();
+
+  const {
+    properties,
+    loading,
+    error,
+    setError,
+    getRoomAvailability,
+    createBooking,
+  } = useBookings();
