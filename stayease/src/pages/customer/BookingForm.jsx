@@ -211,3 +211,5 @@ function BookingFormPage() {
     </main>
   );
 }
+
+export default BookingFormPage;
