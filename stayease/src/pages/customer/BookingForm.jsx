@@ -120,4 +120,11 @@ function BookingFormPage() {
     }
   }
 
+  if (loading) {
+    return <p className="loading-message">Loading property...</p>;
+  }
+  if (error) {
+    return <p className="error-message">{error}</p>;
+  }
+
 }
