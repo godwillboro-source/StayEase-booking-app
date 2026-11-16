@@ -44,3 +44,5 @@ function BookingSummary({ booking }) {
     </div>
   );
 }
+
+export default BookingSummary;
