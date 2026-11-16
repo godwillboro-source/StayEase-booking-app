@@ -16,5 +16,28 @@ function BookingForm({
   const [checkIn, setCheckIn] = useState("");
   const [checkOut, setCheckOut] = useState("");
   const [error, setError] = useState("");
-
   const availableUnits = property.units.filter((unit) => unit.available);
+
+  function handleSubmit(event) {
+    event.preventDefault();
+    setError("");
+
+    if (!selectedUnit) {
+      setError("Please select a unit type.");
+      return;
+    }
+
+    const dateError = validateStay(checkIn, checkOut);
+
+    if (dateError) {
+      setError(dateError);
+      return;
+    }
+
+    onSubmit({
+      propertyId: property.id,
+      unitId: selectedUnit.id,
+      checkIn,
+      checkOut,
+    });
+  }
