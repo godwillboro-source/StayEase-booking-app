@@ -79,3 +79,18 @@ function BookingForm({
           />
         </>
       )}
+
+      <Button
+        type="submit"
+        fullWidth
+        loading={loading}
+        disabled={!selectedUnit}
+      >
+        Submit rental request
+      </Button>
+      <p className="booking-form-note">
+        Your request will be sent to the property manager for confirmation.
+      </p>
+    </form>
+  );
+}
