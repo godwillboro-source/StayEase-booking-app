@@ -1,6 +1,7 @@
+
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useBookings } from "../../context/BookingContext";
+import { useBookings } from "../../context/useBookings";
 import LocationSearch from "../../components/customer/LocationSearch";
 import PropertyGrid from "../../components/customer/PropertyGrid";
 
@@ -8,13 +9,15 @@ const Home = () => {
   const navigate = useNavigate();
   const { properties = [], loading, error } = useBookings();
   const [location, setLocation] = useState("");
+  const [city, setCity] = useState(null);
 
-  const approvedProperties = properties.filter(
+  const listedProperties = properties.filter(
     (property) => property.status === "approved"
   );
 
   const handleSearch = () => {
-    navigate(`/properties?location=${encodeURIComponent(location.trim())}`);
+    const searchLocation = city?.name || location.trim();
+    navigate(`/properties?location=${encodeURIComponent(searchLocation)}`);
   };
 
   return (
@@ -26,13 +29,18 @@ const Home = () => {
           <h1>Find your perfect place to stay.</h1>
 
           <p>
-            Discover accommodation, compare rooms and make your
+            Discover accommodation, compare monthly prices and make your
             reservation easily with StayEase.
           </p>
 
           <LocationSearch
             value={location}
-            onChange={setLocation}
+            onChange={(value) => {
+              setLocation(value);
+              setCity(null);
+            }}
+            selectedCity={city}
+            onCitySelect={setCity}
             onSubmit={handleSearch}
           />
 
@@ -46,7 +54,7 @@ const Home = () => {
         <div className="section-heading">
           <div>
             <h2>Featured properties</h2>
-            <p>Explore accommodation approved by StayEase.</p>
+            <p>Explore accommodation listed by property managers.</p>
           </div>
 
           <Link to="/properties">View all properties</Link>
@@ -56,15 +64,15 @@ const Home = () => {
 
         {error && <p className="error-message">{error}</p>}
 
-        {!loading && !error && approvedProperties.length === 0 && (
+        {!loading && !error && listedProperties.length === 0 && (
           <div className="empty-state">
             <h3>No properties available yet</h3>
             <p>Please check again later.</p>
           </div>
         )}
 
-        {!loading && !error && approvedProperties.length > 0 && (
-          <PropertyGrid properties={approvedProperties.slice(0, 3)} />
+        {!loading && !error && listedProperties.length > 0 && (
+          <PropertyGrid properties={listedProperties.slice(0, 3)} />
         )}
       </section>
 
@@ -75,13 +83,13 @@ const Home = () => {
           <article>
             <span>01</span>
             <h3>Find accommodation</h3>
-            <p>Browse approved properties and compare available rooms.</p>
+            <p>Browse properties and compare available unit types.</p>
           </article>
 
           <article>
             <span>02</span>
             <h3>Make a reservation</h3>
-            <p>Select your room, dates and number of guests.</p>
+            <p>Select a unit and dates for your stay.</p>
           </article>
 
           <article>

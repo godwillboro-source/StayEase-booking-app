@@ -1,4 +1,13 @@
-const LocationSearch = ({ value, onChange, onSubmit }) => {
+
+import CitySearch from "../common/CitySearch";
+
+const LocationSearch = ({
+  value,
+  onChange,
+  selectedCity,
+  onCitySelect,
+  onSubmit
+}) => {
   const handleSubmit = (event) => {
     event.preventDefault();
     onSubmit?.();
@@ -6,16 +15,15 @@ const LocationSearch = ({ value, onChange, onSubmit }) => {
 
   return (
     <form className="location-search" onSubmit={handleSubmit}>
-      <label htmlFor="location-search">Where do you want to stay?</label>
-
       <div className="location-search-controls">
-        <input
+        <CitySearch
           id="location-search"
-          type="search"
-          className="input-field"
-          placeholder="Enter a location"
+          label="Where do you want to stay?"
+          placeholder="Search for a city"
           value={value}
-          onChange={(event) => onChange(event.target.value)}
+          onChange={onChange}
+          selectedCity={selectedCity}
+          onSelect={onCitySelect}
         />
 
         <button type="submit" className="btn btn-primary">
