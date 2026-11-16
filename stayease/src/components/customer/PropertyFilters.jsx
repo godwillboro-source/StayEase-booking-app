@@ -1,56 +1,54 @@
-import React from "react";
-
-const propertyTypes = [
-  "All",
-  "Apartment",
-  "Guest House",
-  "Hotel",
-  "Lodge"
-];
 
 function PropertyFilters({
-  selectedType,
-  onTypeChange,
-  sortOrder,
-  onSortChange
+  unitTypes = [],
+  unitType,
+  onUnitTypeChange,
+  maxPrice,
+  onMaxPriceChange,
+  onClear
 }) {
   return (
     <div className="property-filters">
       <div className="filter-group">
         <label htmlFor="property-type-filter">
-          Property type
+          Unit type
         </label>
 
         <select
           id="property-type-filter"
-          value={selectedType}
-          onChange={(event) => onTypeChange(event.target.value)}
+          value={unitType}
+          onChange={(event) => onUnitTypeChange(event.target.value)}
         >
-          {propertyTypes.map((type) => (
+          <option value="all">All unit types</option>
+          {unitTypes.map((type) => (
             <option key={type} value={type}>
-              {type === "All" ? "All property types" : type}
+              {type}
             </option>
           ))}
         </select>
       </div>
 
       <div className="filter-group">
-        <label htmlFor="property-sort">
-          Sort by price
+        <label htmlFor="property-max-price">
+          Maximum price per month
         </label>
 
-        <select
-          id="property-sort"
-          value={sortOrder}
-          onChange={(event) => onSortChange(event.target.value)}
-        >
-          <option value="default">Recommended</option>
-          <option value="low-high">Price: Low to high</option>
-          <option value="high-low">Price: High to low</option>
-        </select>
+        <input
+          id="property-max-price"
+          type="number"
+          min="0"
+          value={maxPrice}
+          onChange={(event) => onMaxPriceChange(event.target.value)}
+          placeholder="Any price"
+        />
       </div>
+
+      <button type="button" className="clear-filters" onClick={onClear}>
+        Clear filters
+      </button>
     </div>
   );
 }
 
 export default PropertyFilters;
+

@@ -1,44 +1,44 @@
-import React from "react";
 
-import Button from "../common/Button";
+import React from "react";
+import { Link } from "react-router-dom";
 import { formatCurrency } from "../../utils/formatCurrency";
 
-function RoomCard({
-  room,
-  onSelect,
-  selected = false
+function UnitCard({
+  unit,
+  propertyId
 }) {
   return (
-    <article className={`room-card ${selected ? "room-selected" : ""}`}>
-      <div className="room-card-content">
+    <article className="unit-card">
+      <div className="unit-card-content">
         <div>
-          <h3>{room.name}</h3>
-          <p>{room.description || "Comfortable accommodation."}</p>
+          <h3>{unit.name}</h3>
+          <p>{unit.description || "Comfortable accommodation."}</p>
         </div>
 
-        <div className="room-information">
-          <span>Capacity: {room.capacity} guests</span>
-          <span>{room.totalRooms} rooms available in total</span>
+        <div className="unit-information">
+          <span>Bathrooms: {unit.bathrooms}</span>
+          <span>{unit.availableUnits} currently available / {unit.totalUnits} total</span>
         </div>
 
-        <div className="room-card-footer">
+        <div className="unit-card-footer">
           <strong>
-            {formatCurrency(room.pricePerNight)}
-            <small> / night</small>
+            {formatCurrency(unit.pricePerMonth)}
+            <small> / month</small>
           </strong>
 
-          <Button
-            size="small"
-            variant={selected ? "secondary" : "primary"}
-            disabled={!room.available}
-            onClick={() => onSelect(room)}
-          >
-            {selected ? "Selected" : "Select room"}
-          </Button>
+          {unit.available ? (
+            <Link to={`/properties/${propertyId}/book?unitId=${unit.id}`}>
+              <span className="btn btn-primary btn-small">Request unit</span>
+            </Link>
+          ) : (
+            <span className="btn btn-secondary btn-small" aria-disabled="true">
+              Unavailable
+            </span>
+          )}
         </div>
       </div>
     </article>
   );
 }
 
-export default RoomCard;
+export default UnitCard;

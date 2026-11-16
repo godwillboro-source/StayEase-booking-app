@@ -1,7 +1,15 @@
+
 import React from "react";
 import { NavLink } from "react-router-dom";
 
 const navigation = {
+  admin: [
+    { label: "Overview", path: "/admin/dashboard", icon: "▦" },
+    { label: "Managers", path: "/admin/managers", icon: "♙" },
+    { label: "Properties", path: "/admin/properties", icon: "⌂" },
+    { label: "Bookings", path: "/admin/bookings", icon: "▤" },
+    { label: "Cities", path: "/admin/cities", icon: "⌖" }
+  ],
   manager: [
     { label: "Overview", path: "/manager/dashboard", icon: "▦" },
     { label: "My properties", path: "/manager/properties", icon: "⌂" },

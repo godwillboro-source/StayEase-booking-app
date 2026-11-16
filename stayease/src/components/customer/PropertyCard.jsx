@@ -2,18 +2,17 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 import Button from "../common/Button";
-import StatusBadge from "../common/StatusBadge";
 import { formatCurrency } from "../../utils/formatCurrency";
 
 function PropertyCard({ property }) {
-  const rooms = property.rooms || [];
+  const units = property.units || [];
 
-  const availableRooms = rooms.filter(
-    (room) => room.available
+  const availableUnits = units.filter(
+    (unit) => unit.available
   );
 
-  const lowestPrice = availableRooms.length
-    ? Math.min(...availableRooms.map((room) => room.pricePerNight))
+  const lowestPrice = availableUnits.length
+    ? Math.min(...availableUnits.map((unit) => unit.pricePerMonth))
     : null;
 
   return (
@@ -34,13 +33,6 @@ function PropertyCard({ property }) {
 
       <div className="property-card-body">
         <div className="property-card-topline">
-          <span className="property-type">
-            {property.propertyType}
-          </span>
-
-          {property.status !== "approved" && (
-            <StatusBadge status={property.status} />
-          )}
         </div>
 
         <h3>
@@ -64,10 +56,10 @@ function PropertyCard({ property }) {
               <>
                 <span className="price-label">From</span>
                 <strong>{formatCurrency(lowestPrice)}</strong>
-                <span className="price-period">/ night</span>
+                <span className="price-period">/ month</span>
               </>
             ) : (
-              <span className="muted-text">No rooms available</span>
+              <span className="muted-text">No units available</span>
             )}
           </div>
 
