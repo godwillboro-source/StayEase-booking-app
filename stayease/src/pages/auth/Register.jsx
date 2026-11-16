@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
-import { useAuth } from "../../context/AuthContext";
+import { useAuth } from "../../context/useAuth";
 
 import Input from "../../components/common/Input";
 import Select from "../../components/common/Select";
@@ -32,7 +32,7 @@ function Register() {
     }));
   }
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault();
 
     setError("");
@@ -43,7 +43,7 @@ function Register() {
       return;
     }
 
-    const result = register({
+    const result = await register({
       name: formData.name,
       email: formData.email,
       password: formData.password,
@@ -121,7 +121,7 @@ function Register() {
             type="password"
             value={formData.password}
             onChange={handleChange}
-            placeholder="At least 6 characters"
+            placeholder="At least 8 characters"
             required
           />
 
@@ -143,12 +143,6 @@ function Register() {
             Create account
           </Button>
         </form>
-
-        {formData.role === "manager" && (
-          <p className="form-note">
-            Manager accounts require admin approval before login.
-          </p>
-        )}
 
         <p className="auth-switch">
           Already registered?{" "}
