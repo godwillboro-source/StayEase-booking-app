@@ -16,3 +16,5 @@ function BookingStatus({ status }) {
     </div>
   );
 }
+
+export default BookingStatus;
