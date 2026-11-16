@@ -1,5 +1,19 @@
-import { useState } from 'react'
 
-function App() {}
+import React from "react";
 
-export default App
+import AppRoutes from "./routes/AppRoutes";
+
+import { AuthProvider } from "./context/AuthContext";
+import { BookingProvider } from "./context/BookingContext";
+
+function App() {
+  return (
+    <AuthProvider>
+      <BookingProvider>
+        <AppRoutes />
+      </BookingProvider>
+    </AuthProvider>
+  );
+}
+
+export default App;
