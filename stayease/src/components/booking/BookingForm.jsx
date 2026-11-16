@@ -63,3 +63,19 @@ function BookingForm({
         placeholder="Select a unit type"
         required
       />
+
+      {selectedUnit && (
+        <>
+          <DateSelector
+            checkIn={checkIn}
+            checkOut={checkOut}
+            onCheckInChange={setCheckIn}
+            onCheckOutChange={setCheckOut}
+          />
+          <PriceCalculator
+            unit={selectedUnit}
+            checkIn={checkIn}
+            checkOut={checkOut}
+          />
+        </>
+      )}
