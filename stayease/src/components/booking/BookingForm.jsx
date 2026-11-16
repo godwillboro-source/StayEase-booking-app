@@ -31,7 +31,6 @@ function BookingForm({
       setError(dateError);
       return;
     }
-
     onSubmit({
       propertyId: property.id,
       unitId: selectedUnit.id,
@@ -43,3 +42,10 @@ function BookingForm({
     value: String(unit.id),
     label: `${unit.name} — KES ${unit.pricePerMonth.toLocaleString()} per month`,
   }));
+
+  function handleUnitChange(event) {
+    const unitId = Number(event.target.value);
+    const unit = availableUnits.find((item) => item.id === unitId);
+    onUnitChange(unit || null);
+    setError("");
+  }
