@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "../../context/AuthContext";
-import { useBookings } from "../../context/BookingContext";
+import { useAuth } from "../../context/useAuth";
+import { useBookings } from "../../context/useBookings";
+import CitySearch from "../../components/common/CitySearch";
+import { formatPropertyLocation } from "../../services/cityService";
 
 function AddProperty() {
   const { currentUser } = useAuth();
@@ -11,8 +13,8 @@ function AddProperty() {
   const [formData, setFormData] = useState({
     name: "",
     location: "",
+    city: null,
     description: "",
-    propertyType: "hotel",
     image: ""
   });
 
@@ -28,7 +30,7 @@ function AddProperty() {
     }));
   }
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault();
     setError("");
 
@@ -37,19 +39,31 @@ function AddProperty() {
       return;
     }
 
-    if (
-      !formData.name.trim() ||
-      !formData.location.trim() ||
-      !formData.description.trim()
-    ) {
+    if (!formData.name.trim() || !formData.description.trim()) {
       setError("Please complete all required fields.");
+      return;
+    }
+
+    if (!formData.city) {
+      setError("Choose a city from the search results.");
       return;
     }
 
     setLoading(true);
 
     try {
-      addProperty(formData, currentUser.id);
+      const result = await addProperty({
+        ...formData,
+        area: formData.location.trim(),
+        address: formData.location.trim(),
+        location: formatPropertyLocation(formData.location, formData.city)
+      }, currentUser.id);
+
+      if (!result.success) {
+        setError(result.error);
+        return;
+      }
+
       navigate("/manager/properties");
     } catch (err) {
       setError(err.message || "Unable to register property.");
@@ -63,7 +77,7 @@ function AddProperty() {
       <div className="page-header">
         <div>
           <h1>Register Property</h1>
-          <p>Add a property to StayEase.</p>
+          <p>Register your property for monthly rental bookings.</p>
         </div>
 
         <Link to="/manager/properties" className="btn btn-secondary">
@@ -84,29 +98,35 @@ function AddProperty() {
           required
         />
 
-        <label htmlFor="location">Location</label>
+        <CitySearch
+          id="property-city"
+          label="City"
+          value={formData.cityQuery || ""}
+          selectedCity={formData.city}
+          onChange={(cityQuery) => {
+            setFormData((previous) => ({
+              ...previous,
+              cityQuery,
+              city: null
+            }));
+          }}
+          onSelect={(city) => {
+            setFormData((previous) => ({
+              ...previous,
+              city
+            }));
+          }}
+          required
+        />
+
+        <label htmlFor="location">Neighborhood or street address</label>
         <input
           id="location"
           name="location"
           value={formData.location}
           onChange={handleChange}
-          placeholder="e.g. Nairobi, Kenya"
-          required
+          placeholder="e.g. Kilimani"
         />
-
-        <label htmlFor="propertyType">Property Type</label>
-        <select
-          id="propertyType"
-          name="propertyType"
-          value={formData.propertyType}
-          onChange={handleChange}
-        >
-          <option value="hotel">Hotel</option>
-          <option value="apartment">Apartment</option>
-          <option value="guesthouse">Guesthouse</option>
-          <option value="hostel">Hostel</option>
-          <option value="villa">Villa</option>
-        </select>
 
         <label htmlFor="description">Description</label>
         <textarea
