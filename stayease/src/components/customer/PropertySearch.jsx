@@ -1,32 +1,29 @@
-import React, { useState } from "react";
 import Button from "../common/Button";
+import CitySearch from "../common/CitySearch";
 
 function PropertySearch({
-  onSearch,
-  initialValue = ""
+  value,
+  onChange,
+  selectedCity,
+  onCitySelect,
+  onSearch
 }) {
-  const [location, setLocation] = useState(initialValue);
-
   function handleSubmit(event) {
     event.preventDefault();
-    onSearch(location.trim());
+    onSearch?.(value.trim(), selectedCity);
   }
 
   return (
     <form className="property-search" onSubmit={handleSubmit}>
-      <div className="property-search-input">
-        <label htmlFor="property-location-search">
-          Where would you like to stay?
-        </label>
-
-        <input
-          id="property-location-search"
-          type="search"
-          placeholder="Search by town or location"
-          value={location}
-          onChange={(event) => setLocation(event.target.value)}
-        />
-      </div>
+      <CitySearch
+        id="property-location-search"
+        label="Where would you like to stay?"
+        placeholder="Search by city or location"
+        value={value}
+        onChange={onChange}
+        selectedCity={selectedCity}
+        onSelect={onCitySelect}
+      />
 
       <Button type="submit">
         Search stays

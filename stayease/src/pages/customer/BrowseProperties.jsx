@@ -1,6 +1,7 @@
+
 import { useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { useBookings } from "../../context/BookingContext";
+import { useBookings } from "../../context/useBookings";
 
 import Loading from "../../components/common/Loading";
 import ErrorMessage from "../../components/common/ErrorMessage";
@@ -17,43 +18,58 @@ const BrowseProperties = () => {
   const [search, setSearch] = useState(
     searchParams.get("location") || ""
   );
+  const [city, setCity] = useState(null);
 
-  const [propertyType, setPropertyType] = useState("all");
+  const [unitType, setUnitType] = useState("all");
   const [maxPrice, setMaxPrice] = useState("");
 
-  const approvedProperties = useMemo(
-    () => properties.filter(
-      (property) => property.status === "approved"
-    ),
-    [properties]
+  const listedProperties = properties.filter(
+    (property) => property.status === "approved"
   );
 
-  const propertyTypes = useMemo(
+  const unitTypes = useMemo(
     () => [
       ...new Set(
-        approvedProperties
-          .map((property) => property.propertyType)
+        listedProperties
+          .flatMap((property) => property.units.map((unit) => unit.unitType))
           .filter(Boolean)
       ),
     ],
-    [approvedProperties]
+    [listedProperties]
   );
 
   const filteredProperties = useMemo(() => {
-    return approvedProperties.filter((property) => {
+    return listedProperties.filter((property) => {
       const searchTerm = search.trim().toLowerCase();
+      const citySearchable = [
+        property.name,
+        property.location,
+        property.address,
+        property.city?.name,
+        property.city?.admin1,
+        property.city?.country,
+        property.city?.countryCode
+      ].filter(Boolean).join(" ").toLowerCase();
+      const searchTerms = searchTerm.split(/[,\s]+/).filter(Boolean);
+
+      const matchesCity = !city || (
+        property.city?.id === city.id ||
+        (
+          property.city?.name === city.name &&
+          property.city?.countryCode === city.countryCode
+        ) ||
+        (!property.city && property.location?.toLowerCase().includes(city.name.toLowerCase()))
+      );
 
       const matchesSearch =
         !searchTerm ||
-        property.name?.toLowerCase().includes(searchTerm) ||
-        property.location?.toLowerCase().includes(searchTerm);
+        searchTerms.every((term) => citySearchable.includes(term));
 
-      const matchesType =
-        propertyType === "all" ||
-        property.propertyType === propertyType;
+      const matchesType = unitType === "all" ||
+        property.units.some((unit) => unit.unitType === unitType);
 
-      const prices = (property.rooms || [])
-        .map((room) => Number(room.pricePerNight))
+      const prices = (property.units || [])
+        .map((unit) => Number(unit.pricePerMonth))
         .filter((price) => Number.isFinite(price));
 
       const lowestPrice = prices.length
@@ -64,13 +80,14 @@ const BrowseProperties = () => {
         maxPrice === "" ||
         (lowestPrice !== null && lowestPrice <= Number(maxPrice));
 
-      return matchesSearch && matchesType && matchesPrice;
+      return matchesSearch && matchesCity && matchesType && matchesPrice;
     });
-  }, [approvedProperties, search, propertyType, maxPrice]);
+  }, [listedProperties, search, city, unitType, maxPrice]);
 
   const clearFilters = () => {
     setSearch("");
-    setPropertyType("all");
+    setCity(null);
+    setUnitType("all");
     setMaxPrice("");
   };
 
@@ -94,13 +111,27 @@ const BrowseProperties = () => {
       <section className="customer-search-panel">
         <PropertySearch
           value={search}
-          onChange={setSearch}
+          onChange={(value) => {
+            setSearch(value);
+            setCity(null);
+          }}
+          selectedCity={city}
+          onCitySelect={(selectedCity) => {
+            setCity(selectedCity);
+            if (selectedCity) {
+              setSearch(selectedCity.name);
+            }
+          }}
+          onSearch={(value, selectedCity) => {
+            setSearch(selectedCity?.name || value);
+            setCity(selectedCity);
+          }}
         />
 
         <PropertyFilters
-          propertyTypes={propertyTypes}
-          propertyType={propertyType}
-          onPropertyTypeChange={setPropertyType}
+          unitTypes={unitTypes}
+          unitType={unitType}
+          onUnitTypeChange={setUnitType}
           maxPrice={maxPrice}
           onMaxPriceChange={setMaxPrice}
           onClear={clearFilters}

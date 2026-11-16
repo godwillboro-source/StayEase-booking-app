@@ -1,18 +1,25 @@
 import React, { useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 
-import { useAuth } from "../../context/AuthContext";
+import { useAuth } from "../../context/useAuth";
 import Button from "../common/Button";
 
 function Navbar() {
   const { currentUser, logout } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [logoutError, setLogoutError] = useState("");
   const navigate = useNavigate();
 
-  function handleLogout() {
-    logout();
-    setMenuOpen(false);
-    navigate("/login");
+  async function handleLogout() {
+    setLogoutError("");
+    try {
+      await logout();
+      setMenuOpen(false);
+      navigate("/login");
+    } catch (error) {
+      setLogoutError(error.message);
+      return;
+    }
   }
 
   const dashboardPath = currentUser
@@ -106,6 +113,9 @@ function Navbar() {
           )}
         </nav>
       </div>
+      {logoutError && (
+        <p className="error-message" role="alert">{logoutError}</p>
+      )}
     </header>
   );
 }
