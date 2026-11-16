@@ -68,3 +68,5 @@ function BookingCard({ booking, onCancel, showCustomer = false, detailsPath }) {
     </article>
   );
 }
+
+export default BookingCard;
