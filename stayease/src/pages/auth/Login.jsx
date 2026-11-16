@@ -1,14 +1,14 @@
 import React, { useState } from "react";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 
-import { useAuth } from "../../context/AuthContext";
+import { useAuth } from "../../context/useAuth";
 
 import Input from "../../components/common/Input";
 import Button from "../../components/common/Button";
 import ErrorMessage from "../../components/common/ErrorMessage";
 
 function Login() {
-  const { login, currentUser, loading } = useAuth();
+  const { login, currentUser, loading, error: authError } = useAuth();
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
@@ -31,7 +31,7 @@ function Login() {
     }));
   }
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault();
     setError("");
 
@@ -40,7 +40,7 @@ function Login() {
       return;
     }
 
-    const result = login(formData.email, formData.password);
+    const result = await login(formData.email, formData.password);
 
     if (!result.success) {
       setError(result.error);
@@ -63,7 +63,7 @@ function Login() {
           <p>Log in to continue to your StayEase account.</p>
         </div>
 
-        <ErrorMessage message={error} />
+        <ErrorMessage message={error || authError} />
 
         <form onSubmit={handleSubmit} className="auth-form">
           <Input
@@ -88,12 +88,6 @@ function Login() {
             required
           />
 
-          <div className="auth-extra-links">
-            <Link to="/forgot-password">
-              Forgot password?
-            </Link>
-          </div>
-
           <Button
             type="submit"
             fullWidth
@@ -108,21 +102,6 @@ function Login() {
           <Link to="/register">Create an account</Link>
         </p>
 
-        <div className="demo-accounts">
-          <h3>Demo accounts</h3>
-
-          <p>
-            Admin: admin@stayease.com / admin123
-          </p>
-
-          <p>
-            Manager: manager@stayease.com / manager123
-          </p>
-
-          <p>
-            Customer: customer@stayease.com / customer123
-          </p>
-        </div>
       </div>
     </section>
   );

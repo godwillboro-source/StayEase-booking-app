@@ -1,78 +1,52 @@
-const STORAGE_KEY = "stayease_properties";
+import { apiRequest, getAllPages } from "./api";
+import { normalizeProperty } from "./normalizers";
 
-function getProperties() {
-  const saved = localStorage.getItem(STORAGE_KEY);
-
-  return saved ? JSON.parse(saved) : [];
-}
-
-function saveProperties(properties) {
-  localStorage.setItem(
-    STORAGE_KEY,
-    JSON.stringify(properties)
+function toApiProperty(data) {
+  const property = {
+    name: data.name?.trim(),
+    description: data.description?.trim(),
+    city_id: Number(data.city?.id ?? data.city_id ?? data.cityId),
+    area: data.area?.trim() || data.location?.trim() || "",
+    address: data.address?.trim() || "",
+    image_url: data.image?.trim() || data.image_url?.trim() || undefined
+  };
+  return Object.fromEntries(
+    Object.entries(property).filter(([, value]) => value !== undefined)
   );
 }
 
 export const propertyService = {
   async getAll() {
-    return getProperties();
+    const properties = await getAllPages("/properties");
+    return properties.map(normalizeProperty);
   },
 
-  async getApproved() {
-    return getProperties().filter(
-      (property) => property.status === "approved"
-    );
+  async getMine() {
+    const properties = await getAllPages("/properties/mine");
+    return properties.map(normalizeProperty);
   },
 
   async getById(propertyId) {
-    const property = getProperties().find(
-      (item) => item.id === Number(propertyId)
-    );
-
-    if (!property) {
-      throw new Error("Property not found.");
-    }
-
-    return property;
+    return normalizeProperty(await apiRequest(`/properties/${propertyId}`));
   },
 
   async create(propertyData) {
-    const properties = getProperties();
-
-    const property = {
-      ...propertyData,
-      id: Date.now(),
-      status: "pending",
-      rooms: [],
-      createdAt: new Date().toISOString()
-    };
-
-    saveProperties([...properties, property]);
-
-    return property;
+    const property = await apiRequest("/properties", {
+      method: "POST",
+      body: JSON.stringify(toApiProperty(propertyData))
+    });
+    return normalizeProperty(property);
   },
 
   async update(propertyId, updates) {
-    const properties = getProperties();
+    const property = await apiRequest(`/properties/${propertyId}`, {
+      method: "PATCH",
+      body: JSON.stringify(toApiProperty(updates))
+    });
+    return normalizeProperty(property);
+  },
 
-    const exists = properties.some(
-      (item) => item.id === Number(propertyId)
-    );
-
-    if (!exists) {
-      throw new Error("Property not found.");
-    }
-
-    const updated = properties.map((item) =>
-      item.id === Number(propertyId)
-        ? { ...item, ...updates }
-        : item
-    );
-
-    saveProperties(updated);
-
-    return updated.find(
-      (item) => item.id === Number(propertyId)
-    );
+  async delete(propertyId) {
+    return apiRequest(`/properties/${propertyId}`, { method: "DELETE" });
   }
 };
