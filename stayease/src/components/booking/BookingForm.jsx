@@ -94,3 +94,5 @@ function BookingForm({
     </form>
   );
 }
+
+export default BookingForm;
