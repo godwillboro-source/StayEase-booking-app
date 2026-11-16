@@ -49,3 +49,17 @@ function BookingForm({
     onUnitChange(unit || null);
     setError("");
   }
+
+  return (
+    <form className="booking-form" onSubmit={handleSubmit}>
+      <h2>Request a rental</h2>
+      <ErrorMessage message={error} />
+      <Select
+        label="Choose a unit type"
+        name="unitId"
+        value={selectedUnit ? String(selectedUnit.id) : ""}
+        onChange={handleUnitChange}
+        options={unitOptions}
+        placeholder="Select a unit type"
+        required
+      />
