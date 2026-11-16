@@ -21,14 +21,12 @@ function BookingForm({
   function handleSubmit(event) {
     event.preventDefault();
     setError("");
-
     if (!selectedUnit) {
       setError("Please select a unit type.");
       return;
     }
 
     const dateError = validateStay(checkIn, checkOut);
-
     if (dateError) {
       setError(dateError);
       return;
@@ -41,3 +39,7 @@ function BookingForm({
       checkOut,
     });
   }
+  const unitOptions = availableUnits.map((unit) => ({
+    value: String(unit.id),
+    label: `${unit.name} — KES ${unit.pricePerMonth.toLocaleString()} per month`,
+  }));
