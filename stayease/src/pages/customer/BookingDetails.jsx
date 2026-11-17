@@ -52,7 +52,7 @@ const BookingDetails = () => {
   return (
     <main className="customer-page">
       <Link to="/customer/bookings" className="back-link">
-        ← Back to my bookings
+       Back to my bookings
       </Link>
 
       <section className="booking-details-card">

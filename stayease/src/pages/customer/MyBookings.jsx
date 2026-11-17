@@ -2,7 +2,6 @@ import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../context/useAuth";
 import { useBookings } from "../../context/useBookings";
-
 import Loading from "../../components/common/Loading";
 import ErrorMessage from "../../components/common/ErrorMessage";
 import EmptyState from "../../components/common/EmptyState";
@@ -11,7 +10,6 @@ import BookingCard from "../../components/booking/BookingCard";
 const MyBookings = () => {
   const { currentUser } = useAuth();
   const { bookings = [], loading, error, cancelBooking } = useBookings();
-
   const [statusFilter, setStatusFilter] = useState("all");
   const [actionError, setActionError] = useState("");
   const [cancellingId, setCancellingId] = useState(null);
@@ -32,15 +30,12 @@ const MyBookings = () => {
     const confirmed = window.confirm(
       "Are you sure you want to cancel this booking?"
     );
-
     if (!confirmed) return;
-
     setActionError("");
     setCancellingId(booking.id);
 
     try {
       const result = await cancelBooking(booking.id, currentUser.id);
-
       if (result?.success === false) {
         setActionError(result.error || "Unable to cancel this booking.");
       }
@@ -54,7 +49,6 @@ const MyBookings = () => {
   if (loading) {
     return <Loading message="Loading your bookings..." />;
   }
-
   if (error) {
     return <ErrorMessage message={error} />;
   }
@@ -74,7 +68,6 @@ const MyBookings = () => {
 
       <section className="customer-booking-filter">
         <label htmlFor="booking-status-filter">Filter bookings</label>
-
         <select
           id="booking-status-filter"
           className="input-field"
@@ -94,7 +87,6 @@ const MyBookings = () => {
           {actionError}
         </div>
       )}
-
       {filteredBookings.length === 0 ? (
         <EmptyState
           title="No bookings found"
