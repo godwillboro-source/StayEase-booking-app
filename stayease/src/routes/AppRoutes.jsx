@@ -7,8 +7,8 @@ import {
 } from "react-router-dom";
 
 // Layouts
-import MainLayout from "../components/layout/MainLayout";
-import DashboardLayout from "../components/layout/DashboardLayout";
+import MainLayout from "../components/layout/Mainlayout";
+import DashboardLayout from "../components/layout/Dashboardlayout";
 
 // Route protection
 import ProtectedRoute from "./ProtectedRoute";

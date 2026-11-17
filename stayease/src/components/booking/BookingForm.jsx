@@ -1,51 +1,65 @@
 import React, { useState } from "react";
+
 import Select from "../common/Select";
 import Button from "../common/Button";
 import ErrorMessage from "../common/ErrorMessage";
+
 import DateSelector from "./DateSelector";
 import PriceCalculator from "./PriceCalculator";
-import { validateStay } from "../../utils/validation";
+
+import { validateStay } from "../../utils/Validation";
 
 function BookingForm({
   property,
   selectedUnit,
   onUnitChange,
   onSubmit,
-  loading = false,
+  loading = false
 }) {
   const [checkIn, setCheckIn] = useState("");
   const [checkOut, setCheckOut] = useState("");
   const [error, setError] = useState("");
-  const availableUnits = property.units.filter((unit) => unit.available);
+
+  const availableUnits = property.units.filter(
+    (unit) => unit.available
+  );
 
   function handleSubmit(event) {
     event.preventDefault();
     setError("");
+
     if (!selectedUnit) {
       setError("Please select a unit type.");
       return;
     }
 
     const dateError = validateStay(checkIn, checkOut);
+
     if (dateError) {
       setError(dateError);
       return;
     }
+
     onSubmit({
       propertyId: property.id,
       unitId: selectedUnit.id,
       checkIn,
-      checkOut,
+      checkOut
     });
   }
+
   const unitOptions = availableUnits.map((unit) => ({
     value: String(unit.id),
-    label: `${unit.name} — KES ${unit.pricePerMonth.toLocaleString()} per month`,
+    label: `${unit.name} — KES ${unit.pricePerMonth.toLocaleString()} per month`
   }));
 
   function handleUnitChange(event) {
     const unitId = Number(event.target.value);
-    const unit = availableUnits.find((item) => item.id === unitId);
+
+    const unit = availableUnits.find(
+      (item) => item.id === unitId
+    );
+
     onUnitChange(unit || null);
     setError("");
   }
@@ -53,7 +67,9 @@ function BookingForm({
   return (
     <form className="booking-form" onSubmit={handleSubmit}>
       <h2>Request a rental</h2>
+
       <ErrorMessage message={error} />
+
       <Select
         label="Choose a unit type"
         name="unitId"
@@ -72,6 +88,7 @@ function BookingForm({
             onCheckInChange={setCheckIn}
             onCheckOutChange={setCheckOut}
           />
+
           <PriceCalculator
             unit={selectedUnit}
             checkIn={checkIn}
@@ -88,6 +105,7 @@ function BookingForm({
       >
         Submit rental request
       </Button>
+
       <p className="booking-form-note">
         Your request will be sent to the property manager for confirmation.
       </p>

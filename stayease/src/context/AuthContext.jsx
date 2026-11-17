@@ -2,7 +2,7 @@ import {
   useEffect,
   useState
 } from "react";
-import { authService } from "../services/authService";
+import { authService } from "../services/Authservice";
 import { AuthContext } from "./authContext";
 
 export function AuthProvider({ children }) {

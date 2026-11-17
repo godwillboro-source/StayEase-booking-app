@@ -1,6 +1,6 @@
 import { Link, useParams } from "react-router-dom";
-import { useAuth } from "../../context/AuthContext";
-import { useBookings } from "../../context/BookingContext";
+import { useAuth } from "../../context/useAuth";
+import { useBookings } from "../../context/useBookings";
 import Loading from "../../components/common/Loading";
 import ErrorMessage from "../../components/common/ErrorMessage";
 import EmptyState from "../../components/common/EmptyState";
@@ -24,7 +24,7 @@ const BookingDetails = () => {
   const booking = bookings.find(
     (item) =>
       String(item.id) === String(bookingId) &&
-      String(item.customerId) === String(currentUser?.id),
+      String(item.customerId) === String(currentUser?.id)
   );
 
   if (!booking) {
@@ -45,14 +45,14 @@ const BookingDetails = () => {
   const statusMessages = {
     pending: "Your booking is waiting for the property manager's response.",
     confirmed: "Your booking has been confirmed by the property manager.",
-    rejected: "The property manager has rejected this booking request.",
     cancelled: "This booking has been cancelled.",
+    completed: "This booking has been completed.",
   };
 
   return (
     <main className="customer-page">
       <Link to="/customer/bookings" className="back-link">
-         Back to my bookings
+        ← Back to my bookings
       </Link>
 
       <section className="booking-details-card">
@@ -61,6 +61,7 @@ const BookingDetails = () => {
             <h1>Booking details</h1>
             <p>Booking reference: #{booking.id}</p>
           </div>
+
           <BookingStatus status={booking.status} />
         </header>
 
@@ -71,8 +72,8 @@ const BookingDetails = () => {
           </div>
 
           <div>
-            <span>Room</span>
-            <strong>{booking.roomName}</strong>
+            <span>Unit type</span>
+            <strong>{booking.unitName}</strong>
           </div>
 
           <div>
@@ -81,28 +82,23 @@ const BookingDetails = () => {
           </div>
 
           <div>
-            <span>Number of guests</span>
-            <strong>{booking.guests}</strong>
-          </div>
-
-          <div>
-            <span>Check-in</span>
+            <span>Start date</span>
             <strong>{formatDate(booking.checkIn)}</strong>
           </div>
 
           <div>
-            <span>Check-out</span>
+            <span>End date</span>
             <strong>{formatDate(booking.checkOut)}</strong>
           </div>
 
           <div>
-            <span>Number of nights</span>
-            <strong>{booking.nights}</strong>
+            <span>Rental period (days)</span>
+            <strong>{booking.durationDays}</strong>
           </div>
 
           <div>
-            <span>Price per night</span>
-            <strong>{formatCurrency(booking.pricePerNight)}</strong>
+            <span>Monthly rent</span>
+            <strong>{formatCurrency(booking.pricePerMonth)}</strong>
           </div>
 
           <div>

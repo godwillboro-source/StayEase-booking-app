@@ -1,7 +1,8 @@
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { useAuth } from "../../context/AuthContext";
-import { useBookings } from "../../context/BookingContext";
+import { useAuth } from "../../context/useAuth";
+import { useBookings } from "../../context/useBookings";
+
 import Loading from "../../components/common/Loading";
 import ErrorMessage from "../../components/common/ErrorMessage";
 import EmptyState from "../../components/common/EmptyState";
@@ -10,24 +11,30 @@ import BookingCard from "../../components/booking/BookingCard";
 const MyBookings = () => {
   const { currentUser } = useAuth();
   const { bookings = [], loading, error, cancelBooking } = useBookings();
+
   const [statusFilter, setStatusFilter] = useState("all");
   const [actionError, setActionError] = useState("");
   const [cancellingId, setCancellingId] = useState(null);
+
   const myBookings = useMemo(() => {
     return bookings.filter(
-      (booking) => String(booking.customerId) === String(currentUser?.id),
+      (booking) =>
+        String(booking.customerId) === String(currentUser?.id)
     );
   }, [bookings, currentUser?.id]);
 
   const filteredBookings = myBookings.filter(
-    (booking) => statusFilter === "all" || booking.status === statusFilter,
+    (booking) =>
+      statusFilter === "all" || booking.status === statusFilter
   );
 
   const handleCancel = async (booking) => {
     const confirmed = window.confirm(
-      "Are you sure you want to cancel this booking?",
+      "Are you sure you want to cancel this booking?"
     );
+
     if (!confirmed) return;
+
     setActionError("");
     setCancellingId(booking.id);
 
@@ -47,6 +54,7 @@ const MyBookings = () => {
   if (loading) {
     return <Loading message="Loading your bookings..." />;
   }
+
   if (error) {
     return <ErrorMessage message={error} />;
   }
@@ -66,6 +74,7 @@ const MyBookings = () => {
 
       <section className="customer-booking-filter">
         <label htmlFor="booking-status-filter">Filter bookings</label>
+
         <select
           id="booking-status-filter"
           className="input-field"
@@ -75,10 +84,11 @@ const MyBookings = () => {
           <option value="all">All bookings</option>
           <option value="pending">Pending</option>
           <option value="confirmed">Confirmed</option>
-          <option value="rejected">Rejected</option>
           <option value="cancelled">Cancelled</option>
+          <option value="completed">Completed</option>
         </select>
       </section>
+
       {actionError && (
         <div className="error-message" role="alert">
           {actionError}

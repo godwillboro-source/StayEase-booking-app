@@ -1,19 +1,32 @@
 import React from "react";
 import { Link } from "react-router-dom";
+
 import BookingStatus from "./BookingStatus";
 import Button from "../common/Button";
+
 import { formatCurrency } from "../../utils/formatCurrency";
 import { formatDate } from "../../utils/formatDate";
 
-function BookingCard({ booking, onCancel, showCustomer = false, detailsPath }) {
-  const bookingDetailsPath = detailsPath || `/customer/bookings/${booking.id}`;
+function BookingCard({
+  booking,
+  onCancel,
+  showCustomer = false,
+  detailsPath
+}) {
+  const bookingDetailsPath =
+    detailsPath || `/customer/bookings/${booking.id}`;
+
   return (
     <article className="booking-card">
       <div className="booking-card-header">
         <div>
-          <span className="booking-reference">Booking #{booking.id}</span>
+          <span className="booking-reference">
+            Booking #{booking.id}
+          </span>
+
           <h3>{booking.propertyName}</h3>
         </div>
+
         <BookingStatus status={booking.status} />
       </div>
 
@@ -52,9 +65,13 @@ function BookingCard({ booking, onCancel, showCustomer = false, detailsPath }) {
       </div>
 
       <div className="booking-card-actions">
-        <Link to={bookingDetailsPath} className="text-link">
+        <Link
+          to={bookingDetailsPath}
+          className="text-link"
+        >
           View details
         </Link>
+
         {onCancel && ["pending", "confirmed"].includes(booking.status) && (
           <Button
             variant="danger"
