@@ -1,10 +1,10 @@
 import { Link } from "react-router-dom";
 
-import { useAuth } from "../../context/AuthContext";
-import { useBookings } from "../../context/BookingContext";
+import { useAuth } from "../../context/useAuth";
+import { useBookings } from "../../context/useBookings";
 
 import Loading from "../../components/common/Loading";
-import AdminStats from "../../components/admin/AdminStats";
+import ErrorMessage from "../../components/common/ErrorMessage";
 import PropertyList from "../../components/manager/PropertyList";
 
 const ManagerDashboard = () => {
@@ -14,14 +14,16 @@ const ManagerDashboard = () => {
     properties,
     bookings,
     loading,
+    error,
   } = useBookings();
 
   if (loading) {
     return <Loading />;
   }
+  if (error) return <ErrorMessage message={error} />;
 
   const myProperties = properties.filter(
-    (property) => property.managerId === currentUser.id
+    (property) => String(property.managerId) === String(currentUser.id)
   );
 
   const myPropertyIds = myProperties.map((property) => property.id);
@@ -62,25 +64,18 @@ const ManagerDashboard = () => {
           </div>
 
           <div className="manager-stat-card">
-            <span>Approved Properties</span>
+            <span>Properties with units</span>
             <strong>
-              {myProperties.filter((p) => p.status === "approved").length}
+              {myProperties.filter((property) => property.units?.length > 0).length}
             </strong>
           </div>
 
           <div className="manager-stat-card">
-            <span>Pending Approval</span>
-            <strong>
-              {myProperties.filter((p) => p.status === "pending").length}
-            </strong>
-          </div>
-
-          <div className="manager-stat-card">
-            <span>Total Rooms</span>
+            <span>Total Units</span>
             <strong>
               {myProperties.reduce(
                 (total, property) =>
-                  total + (property.rooms?.length || 0),
+                  total + (property.units?.reduce((count, unit) => count + unit.totalUnits, 0) || 0),
                 0
               )}
             </strong>

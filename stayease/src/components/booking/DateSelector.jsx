@@ -7,7 +7,7 @@ function DateSelector({
   checkOut,
   onCheckInChange,
   onCheckOutChange,
-  error = "",
+  error = ""
 }) {
   return (
     <div className="date-selector">
@@ -20,6 +20,7 @@ function DateSelector({
         onChange={(event) => onCheckInChange(event.target.value)}
         required
       />
+
       <Input
         label="End date"
         name="checkOut"
@@ -29,7 +30,12 @@ function DateSelector({
         onChange={(event) => onCheckOutChange(event.target.value)}
         required
       />
-      {error && <p className="field-error date-error">{error}</p>}
+
+      {error && (
+        <p className="field-error date-error">
+          {error}
+        </p>
+      )}
     </div>
   );
 }

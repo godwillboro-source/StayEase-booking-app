@@ -1,22 +1,24 @@
 import { Link } from "react-router-dom";
 
-import { useAuth } from "../../context/AuthContext";
-import { useBookings } from "../../context/BookingContext";
+import { useAuth } from "../../context/useAuth";
+import { useBookings } from "../../context/useBookings";
 
 import PropertyList from "../../components/manager/PropertyList";
 import Loading from "../../components/common/Loading";
+import ErrorMessage from "../../components/common/ErrorMessage";
 
 const MyProperties = () => {
   const { currentUser } = useAuth();
 
-  const { properties, loading } = useBookings();
+  const { properties, loading, error } = useBookings();
 
   if (loading) {
     return <Loading />;
   }
+  if (error) return <ErrorMessage message={error} />;
 
   const myProperties = properties.filter(
-    (property) => property.managerId === currentUser.id
+    (property) => String(property.managerId) === String(currentUser.id)
   );
 
   return (
@@ -38,4 +40,4 @@ const MyProperties = () => {
   );
 };
 
-export default MyProperties
+export default MyProperties;

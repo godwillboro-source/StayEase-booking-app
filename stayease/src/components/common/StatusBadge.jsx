@@ -9,7 +9,8 @@ function StatusBadge({ status }) {
     pending: "Pending",
     rejected: "Rejected",
     confirmed: "Confirmed",
-    cancelled: "Cancelled"
+    cancelled: "Cancelled",
+    completed: "Completed"
   };
 
   return (
