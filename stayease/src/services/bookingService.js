@@ -5,7 +5,6 @@ export const bookingService = {
   async getAll() {
     return (await getAllPages("/bookings")).map(normalizeBooking);
   },
-
   async getMine() {
     return (await getAllPages("/bookings/mine")).map(normalizeBooking);
   },

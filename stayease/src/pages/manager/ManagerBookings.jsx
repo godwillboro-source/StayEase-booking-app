@@ -1,18 +1,14 @@
 import { useMemo, useState } from "react";
-
 import { useAuth } from "../../context/useAuth";
 import { useBookings } from "../../context/useBookings";
-
 import Loading from "../../components/common/Loading";
 import ErrorMessage from "../../components/common/ErrorMessage";
 import Button from "../../components/common/Button";
 import Pagination from "../../components/common/Pagination";
 
 const ITEMS_PER_PAGE = 8;
-
 const ManagerBookings = () => {
   const { currentUser } = useAuth();
-
   const {
     properties,
     bookings,
@@ -26,11 +22,9 @@ const ManagerBookings = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [updatingId, setUpdatingId] = useState(null);
   const [actionError, setActionError] = useState("");
-
   const myPropertyIds = properties
     .filter((property) => String(property.managerId) === String(currentUser.id))
     .map((property) => property.id);
-
   const myBookings = bookings.filter((booking) =>
     myPropertyIds.some(
       (propertyId) => String(propertyId) === String(booking.propertyId)
@@ -40,16 +34,13 @@ const ManagerBookings = () => {
   const filteredBookings = useMemo(() => {
     return myBookings.filter((booking) => {
       const searchValue = search.toLowerCase();
-
       const matchesSearch =
         booking.customerName?.toLowerCase().includes(searchValue) ||
         booking.propertyName?.toLowerCase().includes(searchValue) ||
         booking.unitName?.toLowerCase().includes(searchValue) ||
         String(booking.id).includes(searchValue);
-
       const matchesStatus =
         statusFilter === "all" || booking.status === statusFilter;
-
       return matchesSearch && matchesStatus;
     });
   }, [myBookings, search, statusFilter]);
@@ -57,7 +48,6 @@ const ManagerBookings = () => {
   const totalPages = Math.ceil(
     filteredBookings.length / ITEMS_PER_PAGE
   );
-
   const paginatedBookings = filteredBookings.slice(
     (currentPage - 1) * ITEMS_PER_PAGE,
     currentPage * ITEMS_PER_PAGE
@@ -69,7 +59,6 @@ const ManagerBookings = () => {
       : status === "cancelled"
         ? "cancel"
         : "complete";
-
     const confirmed = window.confirm(
       `Are you sure you want to ${action} this booking?`
     );
@@ -77,7 +66,6 @@ const ManagerBookings = () => {
     if (!confirmed) {
       return;
     }
-
     setUpdatingId(bookingId);
     setActionError("");
 
@@ -87,7 +75,6 @@ const ManagerBookings = () => {
         status,
         currentUser.id
       );
-
       if (result?.success === false) {
         setActionError(result.error || "Unable to update booking.");
       }
@@ -101,7 +88,6 @@ const ManagerBookings = () => {
   if (loading) {
     return <Loading />;
   }
-
   return (
     <div className="manager-page">
       <div className="manager-page-header">
@@ -155,7 +141,6 @@ const ManagerBookings = () => {
             setCurrentPage(1);
           }}
         />
-
         <select
           className="manager-booking-filter"
           value={statusFilter}
@@ -177,7 +162,6 @@ const ManagerBookings = () => {
           <h2>My Reservations</h2>
           <span>{filteredBookings.length} results</span>
         </div>
-
         {paginatedBookings.length === 0 ? (
           <p className="manager-muted">
             No bookings match your current search or filter.
