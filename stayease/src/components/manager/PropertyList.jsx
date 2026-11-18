@@ -31,7 +31,7 @@ function PropertyList({ properties = [] }) {
                 Edit Property
               </Link>
 
-              <Link to={`/manager/properties/${property.id}/rooms`}>
+              <Link to={`/manager/properties/${property.id}/units`}>
                 Manage Rooms
               </Link>
             </div>

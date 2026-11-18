@@ -142,6 +142,10 @@ p { color: #68756d; }
 .auth-heading h1 { margin-bottom: 8px; font-size: 1.8rem; }
 .auth-form, .form-card, .booking-form { display: grid; gap: 15px; }
 .form-group { display: grid; gap: 6px; }
+.password-input-wrapper { position: relative; }
+.password-input-wrapper .form-input { padding-right: 68px; }
+.password-toggle { position: absolute; top: 50%; right: 10px; transform: translateY(-50%); padding: 4px; border: 0; color: var(--green); background: transparent; font-size: .82rem; font-weight: 700; cursor: pointer; }
+.password-toggle:hover { color: var(--green-dark); }
 .form-label { color: #34443b; font-size: .85rem; font-weight: 650; }
 .field-error { color: #bd4242; font-size: .78rem; }
 .auth-extra-links { text-align: right; font-size: .85rem; }

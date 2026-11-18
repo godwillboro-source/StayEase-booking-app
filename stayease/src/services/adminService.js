@@ -21,6 +21,12 @@ export const adminService = {
     });
   },
 
+  async deleteUser(userId) {
+    return apiRequest(`/admin/users/${userId}`, {
+      method: "DELETE"
+    });
+  },
+
   async getProperties(status) {
     const params = status ? { status } : {};
     return (await getAllPages("/admin/properties", params)).map(normalizeProperty);
