@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 function Input({
   label,
@@ -16,6 +16,28 @@ function Input({
   autoComplete,
   className = ""
 }) {
+  const [passwordVisible, setPasswordVisible] = useState(false);
+  const inputType = type === "password" && passwordVisible ? "text" : type;
+  const input = (
+    <input
+      id={name}
+      name={name}
+      type={inputType}
+      value={value ?? ""}
+      onChange={onChange}
+      placeholder={placeholder}
+      required={required}
+      disabled={disabled}
+      min={min}
+      max={max}
+      step={step}
+      autoComplete={autoComplete}
+      className={`form-input ${error ? "input-error" : ""}`}
+      aria-invalid={Boolean(error)}
+      aria-describedby={error ? `${name}-error` : undefined}
+    />
+  );
+
   return (
     <div className={`form-group ${className}`}>
       {label && (
@@ -25,23 +47,23 @@ function Input({
         </label>
       )}
 
-      <input
-        id={name}
-        name={name}
-        type={type}
-        value={value ?? ""}
-        onChange={onChange}
-        placeholder={placeholder}
-        required={required}
-        disabled={disabled}
-        min={min}
-        max={max}
-        step={step}
-        autoComplete={autoComplete}
-        className={`form-input ${error ? "input-error" : ""}`}
-        aria-invalid={Boolean(error)}
-        aria-describedby={error ? `${name}-error` : undefined}
-      />
+      {type === "password" ? (
+        <div className="password-input-wrapper">
+          {input}
+          <button
+            type="button"
+            className="password-toggle"
+            aria-label={passwordVisible ? "Hide password" : "Show password"}
+            aria-controls={name}
+            aria-pressed={passwordVisible}
+            onClick={() => setPasswordVisible((visible) => !visible)}
+          >
+            {passwordVisible ? "Hide" : "Show"}
+          </button>
+        </div>
+      ) : (
+        input
+      )}
 
       {error && (
         <small id={`${name}-error`} className="field-error">

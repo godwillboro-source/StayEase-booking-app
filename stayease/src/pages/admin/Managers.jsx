@@ -44,6 +44,26 @@ function Managers() {
     }
   }
 
+  async function deleteManager(manager) {
+    const confirmed = window.confirm(
+      `Permanently delete ${manager.name} and all associated data? This cannot be undone.`
+    );
+    if (!confirmed) return;
+
+    setUpdatingId(manager.id);
+    setError("");
+    try {
+      await adminService.deleteUser(manager.id);
+      setManagers((previous) =>
+        previous.filter((item) => item.id !== manager.id)
+      );
+    } catch (requestError) {
+      setError(requestError.message);
+    } finally {
+      setUpdatingId(null);
+    }
+  }
+
   if (loading) return <Loading />;
 
   return (
@@ -105,6 +125,14 @@ function Managers() {
                       onClick={() => updateManager(manager, { is_active: !manager.is_active })}
                     >
                       {manager.is_active ? "Block" : "Unblock"}
+                    </Button>
+                    <Button
+                      variant="danger"
+                      size="small"
+                      disabled={updatingId === manager.id}
+                      onClick={() => deleteManager(manager)}
+                    >
+                      Delete
                     </Button>
                   </div>
                 </td>

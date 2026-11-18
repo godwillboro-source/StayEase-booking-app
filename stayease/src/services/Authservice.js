@@ -28,6 +28,6 @@ export const authService = {
   },
 
   async logout() {
-    return apiRequest("/auth/logout", { method: "POST" });
+    return apiRequest("/auth/logout", { method: "DELETE" });
   }
 };
