@@ -1,10 +1,11 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import Button from "../common/Button";
 import { formatCurrency } from "../../utils/formatCurrency";
 
 function PropertyCard({ property }) {
+  const navigate = useNavigate();
   const units = property.units || [];
 
   const availableUnits = units.filter(
@@ -66,9 +67,7 @@ function PropertyCard({ property }) {
           <Button
             variant="primary"
             size="small"
-            onClick={() => {
-              window.location.href = `/properties/${property.id}`;
-            }}
+            onClick={() => navigate(`/properties/${property.id}`)}
           >
             View stay
           </Button>
