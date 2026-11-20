@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useBookings } from "../../context/useBookings";
 
@@ -10,9 +11,59 @@ import UnitCard from "../../components/customer/UnitCard";
 
 const PropertyDetails = () => {
   const { propertyId } = useParams();
-  const { properties = [], loading, error } = useBookings();
+  const {
+    properties = [],
+    loading,
+    error,
+    getPropertyById
+  } = useBookings();
+  const [property, setProperty] = useState(null);
+  const [propertyLoading, setPropertyLoading] = useState(true);
+  const [propertyError, setPropertyError] = useState("");
 
-  if (loading) {
+  useEffect(() => {
+    let active = true;
+
+    const listedProperty = properties.find(
+      (item) => String(item.id) === String(propertyId)
+    );
+
+    if (listedProperty) {
+      setProperty(listedProperty);
+      setPropertyError("");
+      setPropertyLoading(false);
+      return () => {
+        active = false;
+      };
+    }
+
+    setPropertyLoading(true);
+    setPropertyError("");
+
+    getPropertyById(propertyId)
+      .then((result) => {
+        if (active) setProperty(result);
+      })
+      .catch((requestError) => {
+        if (active) {
+          setProperty(null);
+          setPropertyError(
+            requestError.status === 404
+              ? "This property does not exist."
+              : requestError.message
+          );
+        }
+      })
+      .finally(() => {
+        if (active) setPropertyLoading(false);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [propertyId, properties, getPropertyById]);
+
+  if (loading || propertyLoading) {
     return <Loading message="Loading property details..." />;
   }
 
@@ -20,9 +71,20 @@ const PropertyDetails = () => {
     return <ErrorMessage message={error} />;
   }
 
-  const property = properties.find(
-    (item) => String(item.id) === String(propertyId)
-  );
+  if (propertyError) {
+    return (
+      <main className="customer-page">
+        <EmptyState
+          title="Property not found"
+          message={propertyError}
+        />
+
+        <Link to="/properties" className="btn btn-primary">
+          Browse properties
+        </Link>
+      </main>
+    );
+  }
 
   if (!property) {
     return (

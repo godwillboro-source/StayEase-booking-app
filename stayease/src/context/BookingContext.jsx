@@ -130,12 +130,12 @@ export function BookingProvider({ children }) {
     return updateBookingStatus(bookingId, "cancelled");
   }
 
-  async function getPropertyById(propertyId) {
+  const getPropertyById = useCallback(async (propertyId) => {
     const property = await apiRequest(`/properties/${propertyId}`);
     const normalized = normalizeProperty(property);
     setProperties((previous) => mergeProperties(previous, [normalized]));
     return normalized;
-  }
+  }, []);
 
   const value = {
     properties,
