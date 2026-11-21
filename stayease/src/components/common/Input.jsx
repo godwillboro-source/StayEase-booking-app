@@ -13,6 +13,7 @@ function Input({
   min,
   max,
   step,
+  minLength,
   autoComplete,
   className = ""
 }) {
@@ -31,6 +32,7 @@ function Input({
       min={min}
       max={max}
       step={step}
+      minLength={minLength}
       autoComplete={autoComplete}
       className={`form-input ${error ? "input-error" : ""}`}
       aria-invalid={Boolean(error)}

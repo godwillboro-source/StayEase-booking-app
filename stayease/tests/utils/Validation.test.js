@@ -31,10 +31,15 @@ describe("validateEmail", () => {
 });
 
 describe("validatePassword", () => {
-  it("requires a password with at least six characters", () => {
+  it("requires a strong password", () => {
     expect(validatePassword("")).toBe("Password is required.");
-    expect(validatePassword("12345")).toBe("Password must contain at least 6 characters.");
-    expect(validatePassword("123456")).toBe("");
+    expect(validatePassword("Short1")).toBe("Password must contain at least 8 characters.");
+    expect(validatePassword("alllowercase1!")).toBe("Password must contain at least one uppercase letter.");
+    expect(validatePassword("ALLUPPERCASE1!")).toBe("Password must contain at least one lowercase letter.");
+    expect(validatePassword("StrongPassword!")).toBe("Password must contain at least one number.");
+    expect(validatePassword("StrongPassword1")).toBe("Password must contain at least one symbol.");
+    expect(validatePassword("Strong1!")).toBe("");
+    expect(validatePassword("StrongPass1!")).toBe("");
   });
 });
 

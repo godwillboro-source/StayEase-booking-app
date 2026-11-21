@@ -7,6 +7,7 @@ import Input from "../../components/common/Input";
 import Select from "../../components/common/Select";
 import Button from "../../components/common/Button";
 import ErrorMessage from "../../components/common/ErrorMessage";
+import { validatePassword } from "../../utils/Validation";
 
 function Register() {
   const { register, loading } = useAuth();
@@ -37,6 +38,12 @@ function Register() {
 
     setError("");
     setSuccess("");
+
+    const passwordError = validatePassword(formData.password);
+    if (passwordError) {
+      setError(passwordError);
+      return;
+    }
 
     if (formData.password !== formData.confirmPassword) {
       setError("Passwords do not match.");
@@ -121,7 +128,9 @@ function Register() {
             type="password"
             value={formData.password}
             onChange={handleChange}
-            placeholder="At least 8 characters"
+            placeholder="8+ characters with a number and symbol"
+            autoComplete="new-password"
+            minLength={8}
             required
           />
 
@@ -132,6 +141,8 @@ function Register() {
             value={formData.confirmPassword}
             onChange={handleChange}
             placeholder="Enter your password again"
+            autoComplete="new-password"
+            minLength={8}
             required
           />
 

@@ -29,6 +29,17 @@ Small property owners (for example, *Agunda Apartments Naivasha*) have no easy w
 
 Setup instructions for each repository will be added here as the project is built.
 
+## Cloudinary Property Image Uploads
+
+1. In Cloudinary, open **Settings → Upload → Upload presets**.
+2. Create an unsigned upload preset.
+3. In the frontend Render static-site settings, add:
+   - `VITE_CLOUDINARY_CLOUD_NAME=<your Cloudinary cloud name>`
+   - `VITE_CLOUDINARY_UPLOAD_PRESET=<your unsigned preset name>`
+4. Redeploy the frontend.
+
+Property add/edit forms accept JPEG, PNG, or WebP images up to 5 MB. Cloudinary returns a secure URL, which is saved as the property image.
+
 ## Team
 
 - Godwill Boro

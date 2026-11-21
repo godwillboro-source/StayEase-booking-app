@@ -208,6 +208,11 @@ p { color: #68756d; }
 .pagination { display: flex; justify-content: center; gap: 8px; margin-top: 24px; }
 .pagination button, .pagination a { padding: 7px 12px; border: 1px solid var(--border); border-radius: 7px; background: white; }
 .form-card { width: min(100%, 820px); margin: auto; padding: 24px; }
+.image-upload-field { display: grid; gap: 8px; }
+.image-upload-field input[type="file"] { padding: 10px; border: 1px solid var(--border); border-radius: 8px; background: white; }
+.image-preview { height: 220px; overflow: hidden; border-radius: 10px; background: #edf2ee; }
+.image-preview img { width: 100%; height: 100%; object-fit: cover; }
+.field-help { color: #617168; font-size: .78rem; }
 .table-responsive, .booking-table-wrapper, .manager-booking-table-container { overflow-x: auto; border: 1px solid var(--border); border-radius: 10px; background: white; }
 table { width: 100%; border-collapse: collapse; text-align: left; }
 th, td { padding: 12px 15px; border-bottom: 1px solid var(--border); }

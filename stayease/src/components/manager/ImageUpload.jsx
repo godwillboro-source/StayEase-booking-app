@@ -1,19 +1,45 @@
+import { useState } from "react";
+import { uploadPropertyImage } from "../../services/cloudinaryService";
+
 const ImageUpload = ({ value, onChange, error }) => {
   const fallbackImage = "/images/default-property.jpg";
+  const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState("");
+
+  async function handleFileChange(event) {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    setUploading(true);
+    setUploadError("");
+
+    try {
+      const imageUrl = await uploadPropertyImage(file);
+      onChange(imageUrl);
+    } catch (requestError) {
+      setUploadError(requestError.message);
+    } finally {
+      setUploading(false);
+      event.target.value = "";
+    }
+  }
 
   return (
     <div className="image-upload-field">
-      <label htmlFor="property-image">Property Image URL</label>
+      <label htmlFor="property-image">Property image</label>
 
       <input
         id="property-image"
-        type="url"
-        value={value || ""}
-        onChange={(event) => onChange(event.target.value)}
-        placeholder="https://example.com/property.jpg"
+        type="file"
+        accept="image/jpeg,image/png,image/webp"
+        onChange={handleFileChange}
+        disabled={uploading}
       />
 
-      {error && <p className="field-error">{error}</p>}
+      {uploading && <p className="field-help">Uploading image...</p>}
+      {(error || uploadError) && (
+        <p className="field-error">{uploadError || error}</p>
+      )}
 
       <div className="image-preview">
         <img
@@ -26,7 +52,7 @@ const ImageUpload = ({ value, onChange, error }) => {
       </div>
 
       <p className="field-help">
-        Enter a publicly accessible image URL to preview your property.
+        JPEG, PNG or WebP. Maximum file size: 5 MB.
       </p>
     </div>
   );

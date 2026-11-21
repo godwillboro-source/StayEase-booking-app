@@ -4,6 +4,7 @@ import { useAuth } from "../../context/useAuth";
 import { useBookings } from "../../context/useBookings";
 import CitySearch from "../../components/common/CitySearch";
 import { formatPropertyLocation } from "../../services/cityService";
+import ImageUpload from "../../components/manager/ImageUpload";
 
 function AddProperty() {
   const { currentUser } = useAuth();
@@ -139,14 +140,12 @@ function AddProperty() {
           required
         />
 
-        <label htmlFor="image">Image URL (optional)</label>
-        <input
-          id="image"
-          name="image"
-          type="url"
+        <ImageUpload
           value={formData.image}
-          onChange={handleChange}
-          placeholder="https://example.com/property.jpg"
+          onChange={(image) => setFormData((previous) => ({
+            ...previous,
+            image
+          }))}
         />
 
         <button type="submit" disabled={loading}>

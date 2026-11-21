@@ -5,6 +5,7 @@ import { useBookings } from "../../context/useBookings";
 import CitySearch from "../../components/common/CitySearch";
 import Loading from "../../components/common/Loading";
 import ErrorMessage from "../../components/common/ErrorMessage";
+import ImageUpload from "../../components/manager/ImageUpload";
 
 function EditProperty() {
   const { propertyId } = useParams();
@@ -133,8 +134,13 @@ function PropertyEditForm({ property, updateProperty, navigate }) {
         <label htmlFor="description">Description</label>
         <textarea id="description" name="description" value={formData.description} onChange={handleChange} rows="5" required />
 
-        <label htmlFor="image">Image URL</label>
-        <input id="image" name="image" type="url" value={formData.image} onChange={handleChange} />
+        <ImageUpload
+          value={formData.image}
+          onChange={(image) => setFormData((previous) => ({
+            ...previous,
+            image
+          }))}
+        />
 
         <button type="submit" disabled={loading}>
           {loading ? "Saving..." : "Save Changes"}
