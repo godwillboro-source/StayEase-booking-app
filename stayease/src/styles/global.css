@@ -234,7 +234,11 @@ p { color: #68756d; }
 .form-card > .error-message,
 .form-card > .success-message { margin: 0 0 2px; }
 .image-upload-field { display: grid; gap: 8px; }
-.image-upload-field input[type="file"] { padding: 10px; border: 1px solid var(--border); border-radius: 8px; background: white; }
+.image-upload-actions { display: flex; align-items: center; }
+.image-upload-input { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; }
+.image-upload-button { display: inline-flex; min-height: 42px; align-items: center; justify-content: center; padding: 9px 15px; border: 1px solid var(--green); border-radius: 8px; color: white; background: var(--green); font-size: .88rem; font-weight: 700; cursor: pointer; }
+.image-upload-button:hover { background: var(--green-dark); }
+.image-upload-button.is-disabled { opacity: .55; cursor: not-allowed; }
 .image-preview { height: 220px; overflow: hidden; border-radius: 10px; background: #edf2ee; }
 .image-preview img { width: 100%; height: 100%; object-fit: cover; }
 .field-help { color: #617168; font-size: .78rem; }

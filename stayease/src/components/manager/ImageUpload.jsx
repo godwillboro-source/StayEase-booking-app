@@ -28,13 +28,23 @@ const ImageUpload = ({ value, onChange, error }) => {
     <div className="image-upload-field">
       <label htmlFor="property-image">Property image</label>
 
-      <input
-        id="property-image"
-        type="file"
-        accept="image/jpeg,image/png,image/webp"
-        onChange={handleFileChange}
-        disabled={uploading}
-      />
+      <div className="image-upload-actions">
+        <label
+          className={`image-upload-button ${uploading ? "is-disabled" : ""}`}
+          htmlFor="property-image"
+        >
+          {uploading ? "Uploading..." : "Upload photo"}
+        </label>
+
+        <input
+          id="property-image"
+          className="image-upload-input"
+          type="file"
+          accept="image/jpeg,image/png,image/webp"
+          onChange={handleFileChange}
+          disabled={uploading}
+        />
+      </div>
 
       {uploading && <p className="field-help">Uploading image...</p>}
       {(error || uploadError) && (
