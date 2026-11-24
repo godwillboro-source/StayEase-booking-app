@@ -1,16 +1,80 @@
-# React + Vite
+# StayEase Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+The React and Vite frontend for the StayEase property booking application.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- Property search and browsing
+- Property and unit details
+- Customer booking management
+- Property manager dashboards and listings
+- Administrator dashboards and moderation tools
+- Role-based application routes
 
-## React Compiler
+## Tech Stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- React 19
+- Vite
+- React Router
+- Tailwind CSS
+- Vitest and Testing Library
 
-## Expanding the ESLint configuration
+## Getting Started
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+### Prerequisites
+
+- Node.js 20 or newer
+- npm
+
+### Installation
+
+```bash
+npm install
+```
+
+### Environment Configuration
+
+Copy the example environment file:
+
+```bash
+cp .env.example .env
+```
+
+Set `VITE_API_BASE_URL` to the API base URL:
+Example
+
+```text
+VITE_API_BASE_URL=http://localhost:5000/api
+```
+
+During local development, `/api` is used when this variable is not set.
+
+### Run the App
+
+```bash
+npm run dev
+```
+
+## Available Scripts
+
+| Command | Description |
+| --- | --- |
+| `npm run dev` | Start the development server |
+| `npm run build` | Create a production build |
+| `npm run preview` | Preview the production build |
+| `npm run lint` | Run ESLint |
+| `npm test` | Run the test suite |
+| `npm run test:watch` | Run tests in watch mode |
+
+## Project Structure
+
+```text
+src/
+├── components/  # Reusable and role-specific components
+├── context/     # Authentication and booking state
+├── pages/       # Customer, manager, admin, and public pages
+├── routes/      # Routing and route protection
+├── services/    # API requests and data normalization
+└── styles/      # Global styles
+tests/           # Unit and integration tests
+```
