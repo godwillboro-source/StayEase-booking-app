@@ -1,5 +1,10 @@
 import React, { useState } from "react";
-import { Link, Navigate, useNavigate } from "react-router-dom";
+import {
+  Link,
+  Navigate,
+  useLocation,
+  useNavigate
+} from "react-router-dom";
 
 import { useAuth } from "../../context/useAuth";
 
@@ -9,7 +14,9 @@ import ErrorMessage from "../../components/common/ErrorMessage";
 
 function Login() {
   const { login, currentUser, loading, error: authError } = useAuth();
+  const location = useLocation();
   const navigate = useNavigate();
+  const returnTo = location.state?.from;
 
   const [formData, setFormData] = useState({
     email: "",
@@ -19,7 +26,12 @@ function Login() {
   const [error, setError] = useState("");
 
   if (currentUser) {
-    return <Navigate to={`/${currentUser.role}/dashboard`} replace />;
+    return (
+      <Navigate
+        to={returnTo || `/${currentUser.role}/dashboard`}
+        replace
+      />
+    );
   }
 
   function handleChange(event) {
@@ -47,7 +59,7 @@ function Login() {
       return;
     }
 
-    navigate(`/${result.user.role}/dashboard`, {
+    navigate(returnTo || `/${result.user.role}/dashboard`, {
       replace: true
     });
   }

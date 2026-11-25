@@ -12,6 +12,7 @@ const ManagerBookings = () => {
   const {
     properties,
     bookings,
+    bookingsPagination,
     updateBookingStatus,
     loading,
     error,
@@ -48,9 +49,20 @@ const ManagerBookings = () => {
   const totalPages = Math.ceil(
     filteredBookings.length / ITEMS_PER_PAGE
   );
+  const hasActiveFilters = search !== "" || statusFilter !== "all";
+  const paginationTotalPages =
+    !hasActiveFilters &&
+    bookingsPagination?.total === filteredBookings.length &&
+    bookingsPagination?.perPage === ITEMS_PER_PAGE
+      ? bookingsPagination.pages
+      : totalPages;
+
+  const activePage = paginationTotalPages > 0
+    ? Math.min(currentPage, paginationTotalPages)
+    : 1;
   const paginatedBookings = filteredBookings.slice(
-    (currentPage - 1) * ITEMS_PER_PAGE,
-    currentPage * ITEMS_PER_PAGE
+    (activePage - 1) * ITEMS_PER_PAGE,
+    activePage * ITEMS_PER_PAGE
   );
 
   const handleStatusChange = async (bookingId, status) => {
@@ -259,8 +271,8 @@ const ManagerBookings = () => {
         )}
 
         <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages}
+          currentPage={activePage}
+          totalPages={paginationTotalPages}
           onPageChange={setCurrentPage}
         />
       </div>

@@ -2,13 +2,34 @@ import {
   useEffect,
   useState
 } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { authService } from "../services/Authservice";
+import { SESSION_EXPIRED_EVENT } from "../services/api";
 import { AuthContext } from "./authContext";
 
 export function AuthProvider({ children }) {
+  const location = useLocation();
+  const navigate = useNavigate();
   const [currentUser, setCurrentUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    function handleSessionExpired() {
+      if (!currentUser) return;
+      setCurrentUser(null);
+      setError("");
+      navigate("/login", {
+        replace: true,
+        state: { from: location }
+      });
+    }
+
+    window.addEventListener(SESSION_EXPIRED_EVENT, handleSessionExpired);
+    return () => {
+      window.removeEventListener(SESSION_EXPIRED_EVENT, handleSessionExpired);
+    };
+  }, [currentUser, location, navigate]);
 
   useEffect(() => {
     let active = true;

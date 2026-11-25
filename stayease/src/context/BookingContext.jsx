@@ -21,6 +21,7 @@ export function BookingProvider({ children }) {
   const currentUserRole = currentUser?.role;
   const [properties, setProperties] = useState([]);
   const [bookings, setBookings] = useState([]);
+  const [bookingsPagination, setBookingsPagination] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -34,8 +35,8 @@ export function BookingProvider({ children }) {
       const bookingRequest = !currentUserRole
         ? Promise.resolve([])
         : currentUserRole === "customer"
-          ? bookingService.getMine()
-          : bookingService.getAll();
+          ? bookingService.getMineWithMetadata(8)
+          : bookingService.getAllWithMetadata(8);
 
       const [listedProperties, userBookings] = await Promise.all([
         propertyRequest,
@@ -49,7 +50,21 @@ export function BookingProvider({ children }) {
       }
 
       setProperties(allProperties);
-      setBookings(userBookings.map(normalizeBooking));
+      setBookings(
+        Array.isArray(userBookings)
+          ? userBookings.map(normalizeBooking)
+          : userBookings.items.map(normalizeBooking)
+      );
+      setBookingsPagination(
+        Array.isArray(userBookings)
+          ? null
+          : {
+              page: userBookings.page,
+              pages: userBookings.pages,
+              perPage: userBookings.per_page,
+              total: userBookings.total
+            }
+      );
     } catch (requestError) {
       setError(requestError.message);
     } finally {
@@ -140,6 +155,7 @@ export function BookingProvider({ children }) {
   const value = {
     properties,
     bookings,
+    bookingsPagination,
     loading,
     error,
     setError,

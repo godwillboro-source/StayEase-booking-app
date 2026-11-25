@@ -1,12 +1,28 @@
-import { apiRequest, getAllPages } from "./api";
+import {
+  apiRequest,
+  getAllPages,
+  getAllPagesWithMetadata
+} from "./api";
 import { normalizeBooking } from "./normalizers";
 
 export const bookingService = {
   async getAll() {
     return (await getAllPages("/bookings")).map(normalizeBooking);
   },
+  async getAllWithMetadata(perPage) {
+    const result = await getAllPagesWithMetadata("/bookings", {}, perPage);
+    return { ...result, items: result.items.map(normalizeBooking) };
+  },
   async getMine() {
     return (await getAllPages("/bookings/mine")).map(normalizeBooking);
+  },
+  async getMineWithMetadata(perPage) {
+    const result = await getAllPagesWithMetadata(
+      "/bookings/mine",
+      {},
+      perPage
+    );
+    return { ...result, items: result.items.map(normalizeBooking) };
   },
 
   async create(bookingData) {

@@ -1,10 +1,15 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { bookingService } from "../../src/services/bookingService";
-import { apiRequest, getAllPages } from "../../src/services/api";
+import {
+  apiRequest,
+  getAllPages,
+  getAllPagesWithMetadata
+} from "../../src/services/api";
 
 vi.mock("../../src/services/api", () => ({
   apiRequest: vi.fn(),
-  getAllPages: vi.fn()
+  getAllPages: vi.fn(),
+  getAllPagesWithMetadata: vi.fn()
 }));
 
 describe("bookingService", () => {
@@ -16,6 +21,25 @@ describe("bookingService", () => {
     await bookingService.getMine();
 
     expect(getAllPages).toHaveBeenCalledWith("/bookings/mine");
+  });
+
+  it("preserves backend pagination metadata while normalizing bookings", async () => {
+    vi.mocked(getAllPagesWithMetadata).mockResolvedValue({
+      page: 1,
+      pages: 3,
+      per_page: 8,
+      total: 17,
+      items: [{ id: 2, total_price: 350 }]
+    });
+
+    await expect(bookingService.getAllWithMetadata(8)).resolves.toMatchObject({
+      page: 1,
+      pages: 3,
+      per_page: 8,
+      total: 17,
+      items: [{ id: 2, total: 350 }]
+    });
+    expect(getAllPagesWithMetadata).toHaveBeenCalledWith("/bookings", {}, 8);
   });
 
   it("creates a booking with API field names", async () => {

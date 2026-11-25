@@ -1,5 +1,10 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { apiRequest, getAllPages } from "../../src/services/api";
+import {
+  apiRequest,
+  getAllPages,
+  getAllPagesWithMetadata,
+  SESSION_EXPIRED_EVENT
+} from "../../src/services/api";
 
 describe("apiRequest", () => {
   afterEach(() => {
@@ -43,6 +48,51 @@ describe("apiRequest", () => {
       status: 401
     });
   });
+
+  it("signals an expired session for unauthorized API requests", async () => {
+    const dispatchEvent = vi.spyOn(window, "dispatchEvent");
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue({
+      headers: { get: () => "application/json" },
+      json: async () => ({ error: "Session expired" }),
+      ok: false,
+      status: 401
+    }));
+
+    await expect(apiRequest("/bookings")).rejects.toMatchObject({ status: 401 });
+    expect(dispatchEvent).toHaveBeenCalledWith(
+      expect.objectContaining({ type: SESSION_EXPIRED_EVENT })
+    );
+  });
+
+  it("does not treat invalid login credentials as an expired session", async () => {
+    const dispatchEvent = vi.spyOn(window, "dispatchEvent");
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue({
+      headers: { get: () => "application/json" },
+      json: async () => ({ error: "Invalid credentials" }),
+      ok: false,
+      status: 401
+    }));
+
+    await expect(apiRequest("/auth/login")).rejects.toMatchObject({ status: 401 });
+    expect(dispatchEvent).not.toHaveBeenCalledWith(
+      expect.objectContaining({ type: SESSION_EXPIRED_EVENT })
+    );
+  });
+
+  it("does not treat the initial session check as an expired session", async () => {
+    const dispatchEvent = vi.spyOn(window, "dispatchEvent");
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue({
+      headers: { get: () => "application/json" },
+      json: async () => ({ error: "Not authenticated" }),
+      ok: false,
+      status: 401
+    }));
+
+    await expect(apiRequest("/auth/me")).rejects.toMatchObject({ status: 401 });
+    expect(dispatchEvent).not.toHaveBeenCalledWith(
+      expect.objectContaining({ type: SESSION_EXPIRED_EVENT })
+    );
+  });
 });
 
 describe("getAllPages", () => {
@@ -66,5 +116,28 @@ describe("getAllPages", () => {
       "/api/properties?status=active&page=1&per_page=50",
       "/api/properties?status=active&page=2&per_page=50"
     ]);
+  });
+
+  it("returns backend page metadata for the collected collection", async () => {
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue({
+      headers: { get: () => "application/json" },
+      json: async () => ({
+        items: [{ id: 1 }],
+        page: 1,
+        pages: 1,
+        per_page: 8,
+        total: 1
+      }),
+      ok: true
+    }));
+
+    await expect(getAllPagesWithMetadata("/bookings", {}, 8))
+      .resolves.toEqual({
+        items: [{ id: 1 }],
+        page: 1,
+        pages: 1,
+        per_page: 8,
+        total: 1
+      });
   });
 });
